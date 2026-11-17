@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <RootNamespace>SysMgr.Infra</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="SysMgr.Modules.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- WMI：服务/驱动 PathName 查询 -->
+    <PackageReference Include="System.Management" Version="8.0.0" />
+    <!-- ServiceController：服务停止 -->
+    <PackageReference Include="System.ServiceProcess.ServiceController" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SysMgr.Core\SysMgr.Core.csproj" />
+    <ProjectReference Include="..\SysMgr.Infra.Native\SysMgr.Infra.Native.csproj" />
+  </ItemGroup>
+
+</Project>

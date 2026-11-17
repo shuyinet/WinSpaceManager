@@ -1,0 +1,75 @@
+<Page x:Class="SysMgr.App.Views.LiveStreamPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      Title="操作直播">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Background="Transparent">
+        <StackPanel Margin="26,18,26,24">
+
+            <!-- 页头 -->
+            <Grid Margin="2,0,0,18">
+                <StackPanel>
+                    <TextBlock Text="操作直播" Style="{StaticResource PageTitle}" />
+                    <TextBlock Text="实时展示所有正在/已执行动作（TRUST-01），日志同时落盘 history.jsonl"
+                               Style="{StaticResource PageSubtitle}" />
+                </StackPanel>
+            </Grid>
+
+            <!-- 动作栏 -->
+            <Border Style="{StaticResource TechCard}" Margin="2,0,2,14">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Button Style="{StaticResource GlowButton}"
+                            Content="{Binding PauseButtonText}"
+                            Command="{Binding TogglePauseCommand}" />
+                    <Button Style="{StaticResource GhostButton}"
+                            Grid.Column="1" Margin="10,0,0,0"
+                            Content="清屏"
+                            Command="{Binding ClearCommand}" />
+
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <Border Style="{StaticResource Badge}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="直播中" FontSize="12" FontWeight="SemiBold"
+                                           Foreground="{StaticResource AccentBrightBrush}" />
+                                <TextBlock Text="{Binding Entries.Count, StringFormat=· {0} 条, Mode=OneWay}"
+                                           FontSize="12" Margin="6,0,0,0"
+                                           Foreground="{StaticResource TextSecondaryBrush}" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- 直播表 -->
+            <Border Style="{StaticResource TechCard}" Margin="2,0,2,0" Padding="0">
+                <DataGrid Style="{StaticResource Dark.DataGrid}"
+                          ItemsSource="{Binding Entries}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          CanUserAddRows="False"
+                          HeadersVisibility="Column">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="时间" Binding="{Binding Ts, StringFormat=HH:mm:ss}" Width="0.9*" />
+                        <DataGridTextColumn Header="模块" Binding="{Binding ModuleId}" Width="1*" />
+                        <DataGridTextColumn Header="FR" Binding="{Binding FrId}" Width="1.1*" />
+                        <DataGridTextColumn Header="动作" Binding="{Binding Kind}" Width="1.3*" />
+                        <DataGridTextColumn Header="目标" Binding="{Binding Target}" Width="2.6*" />
+                        <DataGridTextColumn Header="原值 → 新值" Binding="{Binding NewValue, TargetNullValue=—}" Width="1.6*" />
+                        <DataGridTextColumn Header="耗时(ms)" Binding="{Binding DurationMs}" Width="0.9*" />
+                        <DataGridTextColumn Header="状态" Binding="{Binding Status}" Width="0.9*" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+
+            <!-- 提示 -->
+            <TextBlock Margin="2,10,0,0" Opacity="0.7" TextWrapping="Wrap"
+                       Text="提示：暂停仅停止渲染，不中断落盘与广播。日志同时落盘 %LocalAppData%\sysmgr\history.jsonl（JSON Lines 公开格式，TRUST-04 第 1 层证据）。" />
+        </StackPanel>
+    </ScrollViewer>
+</Page>

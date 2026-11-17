@@ -1,0 +1,27 @@
+{
+  "$schema": "TDD §2.3 安全等级判定规则的系统关键路径白名单",
+  "schemaVersion": 1,
+  "criticalPaths": [
+    "C:\\Windows\\System32",
+    "C:\\Windows\\SysWOW64",
+    "C:\\Windows\\WinSxS",
+    "C:\\Windows\\Installer",
+    "C:\\Windows\\SoftwareDistribution",
+    "C:\\Windows\\Recovery",
+    "C:\\Windows\\Boot",
+    "C:\\Program Files",
+    "C:\\Program Files (x86)",
+    "C:\\$Recycle.Bin",
+    "C:\\System Volume Information",
+    "C:\\Recovery"
+  ],
+  "criticalRegistryKeys": [
+    "HKLM\\SYSTEM\\CurrentControlSet",
+    "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Component Based Servicing"
+  ],
+  "systemFileNames": [
+    "pagefile.sys",
+    "hiberfil.sys",
+    "swapfile.sys"
+  ]
+}

@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <RootNamespace>SysMgr.App</RootNamespace>
+    <UseWPF>true</UseWPF>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <SatelliteResourceLanguages>zh-CN</SatelliteResourceLanguages>
+    <AssemblyName>sysmgr</AssemblyName>
+    <Version>1.0.1</Version>
+    <FileVersion>1.0.1.0</FileVersion>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WPF-UI" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SysMgr.Core\SysMgr.Core.csproj" />
+    <ProjectReference Include="..\SysMgr.Infra\SysMgr.Infra.csproj" />
+    <ProjectReference Include="..\SysMgr.Modules\SysMgr.Modules.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\rules\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <Link>rules\%(Filename)%(Extension)</Link>
+    </None>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,23 @@
+{
+  "$schema": "TDD §2.5 + §3.6 FR-CLEAN-01 垃圾清理目标路径",
+  "schemaVersion": 1,
+  "systemTemp": {
+    "items": [
+      { "path": "%TEMP%", "label": "用户临时文件", "defaultChecked": true },
+      { "path": "%SystemRoot%\\Temp", "label": "系统临时文件", "defaultChecked": true },
+      { "path": "%SystemRoot%\\Prefetch", "label": "预读缓存", "defaultChecked": true },
+      { "path": "%LocalAppData%\\Microsoft\\Windows\\Explorer", "label": "缩略图缓存", "defaultChecked": true },
+      { "path": "%ProgramData%\\Microsoft\\Windows\\WER", "label": "Windows 错误报告", "defaultChecked": true }
+    ]
+  },
+  "browsers": [
+    { "name": "Edge", "exe": "msedge.exe", "cachePath": "%LocalAppData%\\Microsoft\\Edge\\User Data\\Default\\Cache" },
+    { "name": "Chrome", "exe": "chrome.exe", "cachePath": "%LocalAppData%\\Google\\Chrome\\User Data\\Default\\Cache" },
+    { "name": "Firefox", "exe": "firefox.exe", "cachePath": "%LocalAppData%\\Mozilla\\Firefox\\Profiles" }
+  ],
+  "softwareCaches": [
+    { "name": "微信", "exe": "WeChat.exe", "cachePaths": ["%AppData%\\Tencent\\WeChat"] },
+    { "name": "QQ", "exe": "QQ.exe", "cachePaths": ["%AppData%\\Tencent\\QQ"] },
+    { "name": "VSCode", "exe": "Code.exe", "cachePaths": ["%AppData%\\Code\\Cache", "%AppData%\\Code\\CachedData"] }
+  ]
+}

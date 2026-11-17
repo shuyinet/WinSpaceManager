@@ -1,0 +1,105 @@
+<Page x:Class="SysMgr.App.Views.ResidualPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      Title="残留清除">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Background="Transparent">
+        <StackPanel Margin="26,18,26,24">
+
+            <!-- ===== 页头 ===== -->
+            <Grid Margin="2,0,0,18">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="残留清除" Style="{StaticResource PageTitle}" />
+                    <TextBlock Text="扫描软件残留文件、注册表项与服务，安全清除并走回滚快照"
+                               Style="{StaticResource PageSubtitle}" />
+                </StackPanel>
+                <Border Grid.Column="1" Style="{StaticResource Badge}" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding StatusText}" FontSize="12"
+                               Foreground="{StaticResource AccentBrightBrush}" />
+                </Border>
+            </Grid>
+
+            <!-- ===== 搜索 + 扫描操作区 ===== -->
+            <Border Style="{StaticResource TechCard}" Margin="0,0,0,14" Padding="16,12">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- 搜索框 -->
+                    <Border Grid.Column="0" Background="#10000000" CornerRadius="8"
+                            BorderBrush="{StaticResource StrokeSoftBrush}" BorderThickness="1"
+                            Height="34">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <ui:SymbolIcon Symbol="Search24" Width="16" Height="16" Margin="10,0,0,0"
+                                           Foreground="{StaticResource TextMutedBrush}" />
+                            <TextBox Grid.Column="1" Margin="6,0,10,0"
+                                     VerticalContentAlignment="Center"
+                                     BorderThickness="0" Background="Transparent"
+                                     Foreground="{StaticResource TextPrimaryBrush}"
+                                     Text="{Binding SoftwareName, UpdateSourceTrigger=PropertyChanged}" />
+                        </Grid>
+                    </Border>
+
+                    <Button Grid.Column="1" Style="{StaticResource GlowButton}"
+                            Content="扫描残留" Command="{Binding ScanCommand}"
+                            Margin="10,0,0,0" />
+                    <Button Grid.Column="2" Style="{StaticResource GhostButton}"
+                            Content="取消" Command="{Binding CancelCommand}"
+                            Margin="8,0,0,0" />
+
+                    <ui:ProgressRing Grid.Column="3" Width="28" Height="28" Margin="14,0,0,0"
+                                     IsIndeterminate="{Binding IsScanning}"
+                                     Visibility="{Binding IsScanning, Converter={StaticResource BoolToVis}}" />
+                </Grid>
+            </Border>
+
+            <!-- ===== 残留列表 ===== -->
+            <DataGrid Style="{StaticResource Dark.DataGrid}"
+                      ItemsSource="{Binding Items}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="False"
+                      CanUserAddRows="False"
+                      MinHeight="220">
+                <DataGrid.Columns>
+                    <DataGridCheckBoxColumn Header="" Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" Width="0.4*" />
+                    <DataGridTextColumn Header="描述" Binding="{Binding Item.Description, Mode=OneWay}" Width="2*" />
+                    <DataGridTextColumn Header="类别" Binding="{Binding Item.Category, Mode=OneWay}" Width="0.9*" />
+                    <DataGridTextColumn Header="目标" Binding="{Binding Item.Target, Mode=OneWay}" Width="2*" />
+                    <DataGridTextColumn Header="安全等级" Binding="{Binding Item.Verdict.Level, Mode=OneWay}" Width="0.9*" />
+                    <DataGridTextColumn Header="大小" Binding="{Binding Item.EstimatedSizeBytes, Converter={StaticResource BytesFormatterStatic}, Mode=OneWay}" Width="0.9*" />
+                    <DataGridTextColumn Header="命中关键词" Binding="{Binding Item.MatchedBy, Mode=OneWay}" Width="1*" />
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <!-- ===== 清除操作区 ===== -->
+            <Border Style="{StaticResource TechCardAlt}" Margin="0,14,0,0" Padding="16,12">
+                <StackPanel Orientation="Horizontal">
+                    <ui:SymbolIcon Symbol="Warning24" Width="18" Height="18" Margin="0,0,10,0"
+                                   Foreground="{StaticResource WarningBrush}" />
+                    <TextBlock Text="勾选要清除的残留项后点击右侧按钮，操作将创建回滚快照"
+                               FontSize="12.5" Foreground="{StaticResource TextMutedBrush}"
+                               VerticalAlignment="Center" Margin="0,0,18,0" />
+                    <Button Style="{StaticResource DangerButton}" Content="清除勾选项"
+                            Command="{Binding CleanCommand}" />
+                </StackPanel>
+            </Border>
+
+            <!-- ===== 提示 ===== -->
+            <TextBlock Margin="2,14,0,0" FontSize="12" TextWrapping="Wrap"
+                       Foreground="{StaticResource TextMutedBrush}"
+                       Text="提示：High 等级默认勾选；Low 等级可能影响其他软件，默认不勾选，确认执行前会经 TRUST-02 预演逐项展示 Reason/Evidence。" />
+        </StackPanel>
+    </ScrollViewer>
+</Page>

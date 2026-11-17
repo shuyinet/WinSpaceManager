@@ -1,0 +1,74 @@
+<Page x:Class="SysMgr.App.Views.StartupPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      Title="启动项管理">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Background="Transparent">
+        <StackPanel Margin="26,18,26,24">
+
+            <!-- ===== 页头 ===== -->
+            <Grid Margin="2,0,0,18">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="启动项管理" Style="{StaticResource PageTitle}" />
+                    <TextBlock Text="管理开机自启动项，状态与任务管理器同口径；修改经 TRUST-02 预演确认并可回滚"
+                               Style="{StaticResource PageSubtitle}" />
+                </StackPanel>
+                <Border Grid.Column="1" Style="{StaticResource Badge}" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding StatusText}" FontSize="12"
+                               Foreground="{StaticResource AccentBrightBrush}" />
+                </Border>
+            </Grid>
+
+            <!-- ===== 操作区 ===== -->
+            <Border Style="{StaticResource TechCard}" Margin="0,0,0,14" Padding="16,12">
+                <StackPanel Orientation="Horizontal">
+                    <Button Style="{StaticResource GlowButton}" Content="扫描启动项"
+                            Command="{Binding ScanCommand}" Margin="0,0,8,0" />
+                    <Button Style="{StaticResource DangerButton}" Content="删除选中项"
+                            Command="{Binding DeleteCommand}" Margin="0,0,8,0" />
+                    <Button Style="{StaticResource GhostButton}" Content="编辑命令行"
+                            Command="{Binding EditCommand}" Margin="0,0,14,0" />
+                    <ui:ProgressRing Width="28" Height="28" Margin="6,0,0,0" VerticalAlignment="Center"
+                                     IsIndeterminate="{Binding IsBusy}"
+                                     Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}" />
+                </StackPanel>
+            </Border>
+
+            <!-- ===== 启动项列表 ===== -->
+            <DataGrid Style="{StaticResource Dark.DataGrid}"
+                      ItemsSource="{Binding Items}"
+                      SelectedItem="{Binding SelectedItem}"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      SelectionMode="Single"
+                      MinHeight="260">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="名称" Binding="{Binding Item.Name, Mode=OneWay}" Width="1.4*" />
+                    <DataGridTemplateColumn Header="状态" Width="0.6*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ui:ToggleSwitch IsChecked="{Binding IsEnabled, Mode=OneWay}"
+                                                 OnContent="启用" OffContent="禁用"
+                                                 FontSize="11"
+                                                 Checked="ItemToggle_Toggled"
+                                                 Unchecked="ItemToggle_Toggled" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="影响" Binding="{Binding ImpactText, Mode=OneWay}" Width="0.45*" />
+                    <DataGridTextColumn Header="来源" Binding="{Binding KindText, Mode=OneWay}" Width="1.1*" />
+                    <DataGridTextColumn Header="命令行" Binding="{Binding Command, Mode=OneWay, TargetNullValue=—}" Width="2.6*" />
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <!-- ===== 提示 ===== -->
+            <TextBlock Margin="2,14,0,0" FontSize="12" TextWrapping="Wrap"
+                       Foreground="{StaticResource TextMutedBrush}"
+                       Text="提示：禁用不删除启动项，可随时恢复；删除仅支持注册表 Run 值与启动文件夹快捷方式；计划任务删除请使用系统工具。所有修改均有影子备份。" />
+        </StackPanel>
+    </ScrollViewer>
+</Page>

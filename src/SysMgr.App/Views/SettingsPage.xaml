@@ -1,0 +1,236 @@
+<Page x:Class="SysMgr.App.Views.SettingsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      Title="设置">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Background="Transparent">
+        <StackPanel Margin="26,18,26,24">
+
+            <!-- ===== 页头 ===== -->
+            <Grid Margin="2,0,0,18">
+                <StackPanel>
+                    <TextBlock Text="设置" Style="{StaticResource PageTitle}" />
+                    <TextBlock Text="全局偏好、隐私选项与安全说明；更改即时保存到本地 config.json"
+                               Style="{StaticResource PageSubtitle}" />
+                </StackPanel>
+            </Grid>
+
+            <!-- ===== 外观（V1 仅深色） ===== -->
+            <Border Style="{StaticResource TechCard}" Margin="0,0,0,14">
+                <StackPanel>
+                    <TextBlock Text="外观" Style="{StaticResource SectionTitle}" Margin="0,0,0,12" />
+                    <StackPanel Orientation="Horizontal">
+                        <!-- 深色：当前可用 -->
+                        <Border CornerRadius="9" Background="{StaticResource AccentGradient}"
+                                Padding="16,8" Margin="0,0,10,0">
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon Symbol="WeatherMoon24" Width="14" Height="14"
+                                               Foreground="#031522" Margin="0,0,6,0" />
+                                <TextBlock Text="深色" FontSize="13" FontWeight="SemiBold" Foreground="#031522" />
+                            </StackPanel>
+                        </Border>
+                        <!-- 浅色：V1.5 -->
+                        <Border CornerRadius="9" Background="#0CFFFFFF" Padding="14,8"
+                                IsHitTestVisible="False" Margin="0,0,10,0" Opacity="0.5">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="浅色" FontSize="13"
+                                           Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,8,0" />
+                                <TextBlock Text="V1.5" FontSize="10"
+                                           Foreground="{StaticResource TextMutedBrush}" />
+                            </StackPanel>
+                        </Border>
+                        <!-- 跟随系统：V1.5 -->
+                        <Border CornerRadius="9" Background="#0CFFFFFF" Padding="14,8"
+                                IsHitTestVisible="False" Opacity="0.5">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="跟随系统" FontSize="13"
+                                           Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,8,0" />
+                                <TextBlock Text="V1.5" FontSize="10"
+                                           Foreground="{StaticResource TextMutedBrush}" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                    <TextBlock Text="V1 视觉体系专为深色科技风打造；浅色主题将在 V1.5 随完整色板交付。"
+                               FontSize="11.5" Margin="2,10,0,0"
+                               Foreground="{StaticResource TextMutedBrush}" />
+                </StackPanel>
+            </Border>
+
+            <!-- ===== 扫描与清理 ===== -->
+            <Border Style="{StaticResource TechCard}" Margin="0,0,0,14">
+                <StackPanel>
+                    <TextBlock Text="扫描与清理" Style="{StaticResource SectionTitle}" Margin="0,0,0,12" />
+                    <TextBlock Text="大文件扫描阈值（MB）" FontSize="12.5"
+                               Foreground="{StaticResource TextSecondaryBrush}" />
+                    <ui:NumberBox Margin="0,6,0,0" Width="220" HorizontalAlignment="Left"
+                                  Minimum="1" Maximum="100000" SpinButtonPlacementMode="Inline"
+                                  Value="{Binding LargeFileThresholdMb}" />
+
+                    <TextBlock Text="排除路径（每行一条，扫描与清理自动跳过）" FontSize="12.5"
+                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,16,0,6" />
+                    <Border Background="{StaticResource CardAltBrush}" CornerRadius="9"
+                            BorderBrush="{StaticResource StrokeSoftBrush}" BorderThickness="1">
+                        <TextBox Height="104" Margin="10,8"
+                                 AcceptsReturn="True" BorderThickness="0" Background="Transparent"
+                                 TextWrapping="NoWrap" VerticalScrollBarVisibility="Auto"
+                                 Foreground="{StaticResource TextPrimaryBrush}"
+                                 CaretBrush="{StaticResource AccentBrush}"
+                                 Text="{Binding ExcludePaths, UpdateSourceTrigger=PropertyChanged}" />
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!-- ===== 回滚 ===== -->
+            <Border Style="{StaticResource TechCard}" Margin="0,0,0,14">
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel>
+                        <TextBlock Text="回滚快照保留期（天）" FontSize="12.5"
+                                   Foreground="{StaticResource TextSecondaryBrush}" />
+                        <ui:NumberBox Margin="0,6,0,0" Width="180"
+                                      Minimum="1" Maximum="3650" SpinButtonPlacementMode="Inline"
+                                      Value="{Binding RollbackRetentionDays}" />
+                    </StackPanel>
+                    <TextBlock VerticalAlignment="Bottom" Margin="16,0,0,6" FontSize="11.5"
+                               Text="超出保留期的快照将被清理，存储于 %LocalAppData%\sysmgr\rollback"
+                               Foreground="{StaticResource TextMutedBrush}" TextWrapping="Wrap" MaxWidth="520" />
+                </StackPanel>
+            </Border>
+
+            <!-- ===== 隐私 ===== -->
+            <Border Style="{StaticResource TechCard}" Margin="0,0,0,14">
+                <StackPanel Orientation="Horizontal">
+                    <ui:ToggleSwitch OnContent="遥测已开" OffContent="遥测已关"
+                                     IsChecked="{Binding TelemetryEnabled}" Width="150" />
+                    <StackPanel Margin="16,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="匿名使用统计" FontSize="13" FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryBrush}" />
+                        <TextBlock Text="仅在本地记录匿名统计，默认关闭，任何情况下都不联网上传"
+                                   FontSize="11.5" Foreground="{StaticResource TextMutedBrush}" Margin="0,2,0,0" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- ===== 保存栏 ===== -->
+            <Border Style="{StaticResource TechCardAlt}" Margin="0,0,0,14" Padding="16,12">
+                <Grid>
+                    <TextBlock Text="{Binding StatusText}" FontSize="12.5" VerticalAlignment="Center"
+                               Foreground="{StaticResource AccentBrightBrush}" />
+                    <Button Style="{StaticResource GlowButton}" HorizontalAlignment="Right"
+                            Content="保存设置" Command="{Binding SaveCommand}" Width="132" />
+                </Grid>
+            </Border>
+
+            <!-- ===== V3 占位：钱包 / AI / 在线更新 ===== -->
+            <Border Style="{StaticResource TechCard}" Margin="0,0,0,14" Opacity="0.55" IsHitTestVisible="False">
+                <Grid>
+                    <StackPanel>
+                        <TextBlock Text="AI 与账户" Style="{StaticResource SectionTitle}" Margin="0,0,0,8" />
+                        <TextBlock FontSize="12.5" Foreground="{StaticResource TextSecondaryBrush}"
+                                   Text="AI 钱包与充值 · token 用量 · 云端增强开关 · 规则库在线更新" />
+                    </StackPanel>
+                    <Border HorizontalAlignment="Right" Style="{StaticResource Badge}" VerticalAlignment="Center">
+                        <TextBlock Text="V3" FontSize="11" Foreground="{StaticResource AccentBrightBrush}" />
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- ============ 帮助（FR-SETTINGS-02） ============ -->
+            <TextBlock Text="安全等级说明" Style="{StaticResource SectionTitle}" Margin="2,6,0,10" />
+            <UniformGrid Columns="3" Margin="0,0,0,14">
+                <!-- High -->
+                <Border Style="{StaticResource TechCard}" Margin="0,0,6,0">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse Width="9" Height="9" Fill="{StaticResource SuccessBrush}" Margin="0,0,8,0" />
+                            <TextBlock Text="High 安全" FontSize="13.5" FontWeight="SemiBold"
+                                       Foreground="{StaticResource SuccessBrush}" />
+                        </StackPanel>
+                        <TextBlock Margin="0,10,0,0" FontSize="12" TextWrapping="Wrap"
+                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                   Text="仅动临时/缓存等可再生文件，不触及系统关键区域，风险极低。" />
+                    </StackPanel>
+                </Border>
+                <!-- Medium -->
+                <Border Style="{StaticResource TechCard}" Margin="6,0">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse Width="9" Height="9" Fill="{StaticResource WarningBrush}" Margin="0,0,8,0" />
+                            <TextBlock Text="Medium 中等" FontSize="13.5" FontWeight="SemiBold"
+                                       Foreground="{StaticResource WarningBrush}" />
+                        </StackPanel>
+                        <TextBlock Margin="0,10,0,0" FontSize="12" TextWrapping="Wrap"
+                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                   Text="涉及注册表、服务或迁移文件，已自动生成回滚快照，失败可还原。" />
+                    </StackPanel>
+                </Border>
+                <!-- Low -->
+                <Border Style="{StaticResource TechCard}" Margin="6,0,0,0">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse Width="9" Height="9" Fill="{StaticResource DangerBrush}" Margin="0,0,8,0" />
+                            <TextBlock Text="Low 高风险" FontSize="13.5" FontWeight="SemiBold"
+                                       Foreground="{StaticResource DangerBrush}" />
+                        </StackPanel>
+                        <TextBlock Margin="0,10,0,0" FontSize="12" TextWrapping="Wrap"
+                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                   Text="强制卸载/关键路径操作，需逐项核对并手动确认风险后才执行。" />
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+
+            <!-- 常见风险提示 -->
+            <Border Style="{StaticResource TechCard}" Margin="0,0,0,14">
+                <StackPanel>
+                    <TextBlock Text="常见风险提示" Style="{StaticResource SectionTitle}" Margin="0,0,0,10" />
+                    <ItemsControl>
+                        <ItemsControl.Items>
+                            <TextBlock Margin="0,3" FontSize="12.5" Foreground="{StaticResource TextSecondaryBrush}"
+                                       Text="• 强制卸载可能导致软件残留或无法正常更新，优先使用标准卸载。" />
+                            <TextBlock Margin="0,3" FontSize="12.5" Foreground="{StaticResource TextSecondaryBrush}"
+                                       Text="• 清理浏览器 Cookie 会退出网站登录；清理前注意保存表单。" />
+                            <TextBlock Margin="0,3" FontSize="12.5" Foreground="{StaticResource TextSecondaryBrush}"
+                                       Text="• 大文件搬家期间请勿中断；SHA-256 校验通过后才会删除源文件。" />
+                            <TextBlock Margin="0,3" FontSize="12.5" Foreground="{StaticResource TextSecondaryBrush}"
+                                       Text="• 所有破坏性操作均先生成影子备份，失败时自动回滚。" />
+                        </ItemsControl.Items>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <!-- 使用流程 -->
+            <Border Style="{StaticResource TechCardAlt}">
+                <StackPanel>
+                    <TextBlock Text="推荐使用流程" Style="{StaticResource SectionTitle}" Margin="0,0,0,10" />
+                    <UniformGrid Columns="5">
+                        <StackPanel Margin="0,0,8,0">
+                            <TextBlock Text="1" FontSize="18" FontWeight="Bold" Foreground="{StaticResource AccentBrush}" />
+                            <TextBlock Text="仪表盘一键体检" FontSize="12" Margin="0,4,0,0" TextWrapping="Wrap"
+                                       Foreground="{StaticResource TextSecondaryBrush}" />
+                        </StackPanel>
+                        <StackPanel Margin="8,0">
+                            <TextBlock Text="2" FontSize="18" FontWeight="Bold" Foreground="{StaticResource AccentBrush}" />
+                            <TextBlock Text="卸载不用软件" FontSize="12" Margin="0,4,0,0" TextWrapping="Wrap"
+                                       Foreground="{StaticResource TextSecondaryBrush}" />
+                        </StackPanel>
+                        <StackPanel Margin="8,0">
+                            <TextBlock Text="3" FontSize="18" FontWeight="Bold" Foreground="{StaticResource AccentBrush}" />
+                            <TextBlock Text="清理垃圾缓存" FontSize="12" Margin="0,4,0,0" TextWrapping="Wrap"
+                                       Foreground="{StaticResource TextSecondaryBrush}" />
+                        </StackPanel>
+                        <StackPanel Margin="8,0">
+                            <TextBlock Text="4" FontSize="18" FontWeight="Bold" Foreground="{StaticResource AccentBrush}" />
+                            <TextBlock Text="大文件搬家" FontSize="12" Margin="0,4,0,0" TextWrapping="Wrap"
+                                       Foreground="{StaticResource TextSecondaryBrush}" />
+                        </StackPanel>
+                        <StackPanel Margin="8,0,0,0">
+                            <TextBlock Text="5" FontSize="18" FontWeight="Bold" Foreground="{StaticResource AccentBrush}" />
+                            <TextBlock Text="需要时回滚" FontSize="12" Margin="0,4,0,0" TextWrapping="Wrap"
+                                       Foreground="{StaticResource TextSecondaryBrush}" />
+                        </StackPanel>
+                    </UniformGrid>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>

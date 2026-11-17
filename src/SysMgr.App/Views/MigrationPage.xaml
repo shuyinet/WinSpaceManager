@@ -1,0 +1,225 @@
+<Page x:Class="SysMgr.App.Views.MigrationPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      Title="大文件搬家" Loaded="Page_Loaded">
+    <Page.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </Page.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Background="Transparent">
+        <StackPanel Margin="26,18,26,24">
+
+            <!-- 页头 -->
+            <Grid Margin="2,0,0,16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal">
+                    <Border Width="46" Height="46" CornerRadius="12" Background="#1A18C0FF" Margin="0,0,12,0">
+                        <ui:SymbolIcon Symbol="ArrowMove24" FontSize="22"
+                                       Foreground="{StaticResource AccentBrush}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Style="{StaticResource PageTitle}"
+                                   Text="{Binding TotalText, StringFormat=发现可搬家文件共 {0}}" />
+                        <TextBlock Style="{StaticResource PageSubtitle}"
+                                   Text="将大文件搬家至其他盘，减少系统盘占用，提升电脑运行速度" />
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Style="{StaticResource GhostButton}" Content="重新扫描"
+                            Command="{Binding ScanCommand}" Margin="0,0,10,0" />
+                    <Button Style="{StaticResource GlowButton}" Content="立即搬家"
+                            Command="{Binding MigrateCommand}" />
+                </StackPanel>
+            </Grid>
+
+            <!-- 选择统计 -->
+            <Border Style="{StaticResource TechCardAlt}" Padding="16,10" Margin="0,0,0,12">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock VerticalAlignment="Center">
+                        <Run Text="已选择 " Foreground="{StaticResource TextSecondaryBrush}" />
+                        <Run Text="{Binding SelectedCount, Mode=OneWay}" FontWeight="SemiBold"
+                             Foreground="{StaticResource AccentBrush}" />
+                        <Run Text=" 项，可释放空间：" Foreground="{StaticResource TextSecondaryBrush}" />
+                        <Run Text="{Binding SelectedText, Mode=OneWay}" FontWeight="SemiBold"
+                             Foreground="{StaticResource AccentBrush}" />
+                    </TextBlock>
+
+                    <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="12"
+                               Foreground="{StaticResource TextMutedBrush}" MaxWidth="460"
+                               TextTrimming="CharacterEllipsis" Text="{Binding StatusText}" />
+                </Grid>
+            </Border>
+
+            <!-- 分类列表 -->
+            <Border Style="{StaticResource TechCard}" Padding="8" Margin="0,0,0,12">
+                <ScrollViewer MaxHeight="430" VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled" PanningMode="VerticalOnly">
+                    <ItemsControl ItemsSource="{Binding Groups}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="0,0,0,6">
+
+                                    <!-- 组头 -->
+                                    <Grid Margin="6,4">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Button Width="24" Height="24" Padding="0" Cursor="Hand"
+                                                Background="Transparent" BorderThickness="0"
+                                                ToolTip="展开 / 收起"
+                                                Command="{Binding ToggleCommand}">
+                                            <TextBlock Text="{Binding ChevronGlyph}" FontFamily="Segoe MDL2 Assets"
+                                                       FontSize="12" Foreground="{StaticResource TextMutedBrush}" />
+                                        </Button>
+
+                                        <CheckBox Grid.Column="1" Margin="4,0,10,0" VerticalAlignment="Center"
+                                                  IsChecked="{Binding IsAllSelected, Mode=TwoWay}"
+                                                  ToolTip="全选 / 取消全选本组" />
+
+                                        <TextBlock Grid.Column="2" Text="{Binding Title}" FontSize="14"
+                                                   FontWeight="SemiBold" VerticalAlignment="Center"
+                                                   Foreground="{StaticResource TextPrimaryBrush}" />
+
+                                        <TextBlock Grid.Column="3" Text="{Binding CountText}" FontSize="12"
+                                                   Margin="0,0,12,0" VerticalAlignment="Center"
+                                                   Foreground="{StaticResource TextMutedBrush}" />
+
+                                        <TextBlock Grid.Column="4" Text="{Binding TotalText}" FontSize="13"
+                                                   FontWeight="SemiBold" VerticalAlignment="Center"
+                                                   Foreground="{StaticResource AccentBrush}" />
+                                    </Grid>
+
+                                    <!-- 组内文件 -->
+                                    <ItemsControl ItemsSource="{Binding Items}" Margin="24,2,6,4"
+                                                  Visibility="{Binding IsExpanded, Converter={StaticResource BoolToVis}}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Background="#06FFFFFF" CornerRadius="8"
+                                                        Padding="10,6" Margin="0,2">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto" />
+                                                            <ColumnDefinition Width="*" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <CheckBox VerticalAlignment="Center"
+                                                                  IsChecked="{Binding IsSelected, Mode=TwoWay}" />
+
+                                                        <StackPanel Grid.Column="1" Margin="10,0,12,0"
+                                                                    VerticalAlignment="Center">
+                                                            <TextBlock Text="{Binding Name}" FontSize="13"
+                                                                       TextTrimming="CharacterEllipsis"
+                                                                       Foreground="{StaticResource TextPrimaryBrush}" />
+                                                            <TextBlock Text="{Binding Folder}" FontSize="11"
+                                                                       TextTrimming="CharacterEllipsis"
+                                                                       Foreground="{StaticResource TextMutedBrush}" />
+                                                        </StackPanel>
+
+                                                        <TextBlock Grid.Column="2" Text="{Binding SizeText}"
+                                                                   FontSize="12.5" FontWeight="SemiBold"
+                                                                   Margin="0,0,14,0" VerticalAlignment="Center"
+                                                                   Foreground="{StaticResource AccentBrush}" />
+
+                                                        <Button Grid.Column="3" Content="搬家" Height="26"
+                                                                MinWidth="62" Padding="10,0"
+                                                                Style="{StaticResource GhostButton}"
+                                                                Command="{Binding DataContext.MigrateSingleCommand, RelativeSource={RelativeSource AncestorType={x:Type Page}}}"
+                                                                CommandParameter="{Binding}" />
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Border>
+
+            <!-- 底部：目标位置 + 记录 -->
+            <Border Style="{StaticResource TechCardAlt}" Padding="16,10" Margin="0,0,0,12">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <ui:SymbolIcon Symbol="FolderOpen24" FontSize="16" Margin="0,0,8,0"
+                                       Foreground="{StaticResource TextMutedBrush}" />
+                        <TextBlock Text="搬家到：" VerticalAlignment="Center"
+                                   Foreground="{StaticResource TextSecondaryBrush}" />
+                        <TextBlock Text="{Binding DestinationPath}" VerticalAlignment="Center"
+                                   FontWeight="SemiBold" MaxWidth="520" TextTrimming="CharacterEllipsis"
+                                   Foreground="{StaticResource TextPrimaryBrush}" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <Button Style="{StaticResource GhostButton}" Content="选择其他位置" Height="30"
+                                Padding="12,0" Margin="0,0,8,0" Click="ChooseDestination_Click" />
+                        <Button Style="{StaticResource GhostButton}" Content="搬家记录" Height="30"
+                                Padding="12,0" Command="{Binding ToggleRecordsCommand}" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- 搬家记录 -->
+            <Border Style="{StaticResource TechCard}" Margin="0,0,0,12"
+                    Visibility="{Binding ShowRecords, Converter={StaticResource BoolToVis}}">
+                <StackPanel>
+                    <TextBlock Text="搬家记录" Style="{StaticResource SectionTitle}" Margin="0,0,0,10" />
+
+                    <ItemsControl ItemsSource="{Binding Records}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,3">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="76" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Text="{Binding TimeText}" FontSize="12"
+                                               Foreground="{StaticResource TextMutedBrush}" />
+                                    <TextBlock Grid.Column="1" Text="{Binding Summary}" FontSize="12.5"
+                                               Margin="0,0,16,0"
+                                               Foreground="{StaticResource TextPrimaryBrush}" />
+                                    <TextBlock Grid.Column="2" Text="{Binding Destination}" FontSize="12"
+                                               TextTrimming="CharacterEllipsis"
+                                               Foreground="{StaticResource TextMutedBrush}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <!-- 流程提示 -->
+            <TextBlock Margin="2,2,0,0" Opacity="0.7" TextWrapping="Wrap"
+                       Foreground="{StaticResource TextMutedBrush}"
+                       Text="搬家流程：复制到目标盘 → SHA-256 校验 → 校验通过后删除源文件；任一环节失败会自动回滚，源文件不会被删除。搬家前会展示全部文件清单供确认。AppData 下程序目录内的文件搬走后，对应软件可能无法运行，请按需勾选。" />
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>

@@ -1,0 +1,37 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+*.userprefs
+
+# Build artifacts
+[Pp]ublish/
+*.msix
+*.msixbundle
+*.appx
+*.appxbundle
+
+# IDE
+.idea/
+*.swp
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Local data (开发环境产生的运行数据)
+%LocalAppData%/
+tools/
+artifacts/
+
+# Local workspace metadata
+.svn/
+.trae/
+.vscode/
+.env
+.env.*
+*.pfx
+*.p12
+
